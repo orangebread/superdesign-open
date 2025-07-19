@@ -24,9 +24,12 @@
 	  "node_modules",
 	  "dist",
 	  ".vscode-test"
-	]
-	/* Additional Checks */
-	// "noImplicitReturns": true, /* Report error when not all code paths in function return a value. */
-	// "noFallthroughCasesInSwitch": true, /* Report errors for fallthrough cases in switch statement. */
-	// "noUnusedParameters": true,  /* Report errors on unused parameters. */
+	],
+	/* Additional Checks - Enabled for better type safety */
+	"noImplicitReturns": true, /* Report error when not all code paths in function return a value. */
+	"noFallthroughCasesInSwitch": true, /* Report errors for fallthrough cases in switch statement. */
+	"noUnusedParameters": true,  /* Report errors on unused parameters. */
+	"noUnusedLocals": true, /* Report errors on unused local variables. */
+	"exactOptionalPropertyTypes": true, /* Interpret optional property types as written, rather than adding 'undefined'. */
+	"noImplicitOverride": true /* Ensure overriding members in derived classes are marked with an override modifier. */
 }

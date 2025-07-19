@@ -43,7 +43,7 @@ const ModelSelector: React.FC<ModelSelectorProps> = ({ selectedModel, onModelCha
         { id: 'deepseek/deepseek-coder-v2-instruct', name: 'DeepSeek Coder V2', provider: 'OpenRouter (DeepSeek)', category: 'Balanced' },
 
         // Moonshot AI (OpenRouter) - Kimi Models
-        { id: 'moonshot/kimi-k2', name: 'Kimi K2', provider: 'OpenRouter (Moonshot)', category: 'Premium' },
+        { id: 'moonshot/kimi-k2-0711-preview', name: 'Kimi K2', provider: 'OpenRouter (Moonshot)', category: 'Premium' },
         { id: 'moonshot/moonshot-v1-32k', name: 'Moonshot V1 32K', provider: 'OpenRouter (Moonshot)', category: 'Balanced' },
 
         // Mistral (OpenRouter)

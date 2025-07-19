@@ -88,7 +88,31 @@ export class ConfigManager {
     }
 
     /**
-     * Get API key with proper fallback logic
+     * Validate API key format
+     */
+    private validateApiKey(apiKey: string, provider: 'anthropic' | 'openai' | 'openrouter'): boolean {
+        if (!apiKey || typeof apiKey !== 'string' || apiKey.trim().length === 0) {
+            return false;
+        }
+
+        const trimmedKey = apiKey.trim();
+
+        // Basic format validation
+        switch (provider) {
+            case 'anthropic':
+                return trimmedKey.startsWith('sk-ant-') && trimmedKey.length > 20;
+            case 'openai':
+                return trimmedKey.startsWith('sk-') && trimmedKey.length > 20;
+            case 'openrouter':
+                // OpenRouter keys can have various formats, be more flexible
+                return (trimmedKey.startsWith('sk-or-') || trimmedKey.startsWith('sk-')) && trimmedKey.length > 15;
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * Get API key with proper fallback logic and validation
      */
     public getApiKey(provider: 'anthropic' | 'openai' | 'openrouter'): string | undefined {
         const keyMappings = {
@@ -98,7 +122,14 @@ export class ConfigManager {
         };
 
         const mapping = keyMappings[provider];
-        return this.get<string>(mapping.setting, mapping.env);
+        const apiKey = this.get<string>(mapping.setting, mapping.env);
+
+        if (apiKey && !this.validateApiKey(apiKey, provider)) {
+            console.warn(`[ConfigManager] Invalid API key format for ${provider}: ${apiKey.substring(0, 10)}...`);
+            return undefined;
+        }
+
+        return apiKey;
     }
 
     /**
@@ -107,8 +138,8 @@ export class ConfigManager {
     public getOpenRouterConfig() {
         return {
             apiKey: this.getApiKey('openrouter'),
-            siteUrl: this.get<string>('openrouterSiteUrl', 'OPENROUTER_SITE_URL', 'https://github.com/superdesigndev/superdesign'),
-            siteName: this.get<string>('openrouterSiteName', 'OPENROUTER_SITE_NAME', 'Superdesign VSCode Extension'),
+            siteUrl: this.get<string>('openrouterSiteUrl', 'OPENROUTER_SITE_URL', 'https://github.com/orangebread/superdesign-open'),
+            siteName: this.get<string>('openrouterSiteName', 'OPENROUTER_SITE_NAME', 'SuperDesign Open VSCode Extension'),
             usageTracking: this.get<boolean>('openrouterUsageTracking', 'OPENROUTER_USAGE_TRACKING', true),
             reasoningEnabled: this.get<boolean>('openrouterReasoningEnabled', 'OPENROUTER_REASONING_ENABLED', false),
             reasoningEffort: this.get<string>('openrouterReasoningEffort', 'OPENROUTER_REASONING_EFFORT', 'medium')

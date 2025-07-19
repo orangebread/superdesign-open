@@ -482,7 +482,7 @@ AI_MODEL=deepseek/deepseek-r1
 
 #### **🔥 Premium Models (Best Performance)**
 - **DeepSeek R1** - `deepseek/deepseek-r1` (Reasoning)
-- **Kimi K2** - `moonshot/kimi-k2` (Advanced reasoning)
+- **Kimi K2** - `moonshot/kimi-k2-0711-preview` (Advanced reasoning)
 - **Claude 4 Opus** - `claude-4-opus-20250514` (Premium)
 - **Grok 3** - `x-ai/grok-3` (Latest from xAI)
 - **Qwen3 235B** - `qwen/qwen3-235b-a22b-04-28` (Massive scale)

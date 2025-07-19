@@ -6,7 +6,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as os from 'os';
-import { AgentService, ExecutionContext } from '../types/agent';
+import { AgentService, ExecutionContext, QueryOptions } from '../types/agent';
 import { config } from '../utils/config';
 import { createReadTool } from '../tools/read-tool';
 import { createWriteTool } from '../tools/write-tool';
@@ -652,10 +652,10 @@ I've created the html design, please reveiw and let me know if you need any chan
     async query(
         prompt?: string,
         conversationHistory?: CoreMessage[],
-        options?: any, 
+        options?: QueryOptions,
         abortController?: AbortController,
-        onMessage?: (message: any) => void
-    ): Promise<any[]> {
+        onMessage?: (message: CoreMessage) => void
+    ): Promise<CoreMessage[]> {
         this.outputChannel.appendLine('=== CUSTOM AGENT QUERY CALLED ===');
         
         // Determine which input format we're using
@@ -676,10 +676,10 @@ I've created the html design, please reveiw and let me know if you need any chan
             await this.setupWorkingDirectory();
         }
 
-        const responseMessages: any[] = [];
+        const responseMessages: CoreMessage[] = [];
         const sessionId = `session_${Date.now()}`;
         let messageBuffer = '';
-        
+
         // Tool call streaming state
         let currentToolCall: any = null;
         let toolCallBuffer = '';
@@ -757,12 +757,12 @@ I've created the html design, please reveiw and let me know if you need any chan
                     case 'text-delta':
                         // Handle streaming text (assistant message chunks) - CoreMessage format
                         messageBuffer += chunk.textDelta;
-                        
+
                         const textMessage: CoreMessage = {
                             role: 'assistant',
                             content: chunk.textDelta
                         };
-                        
+
                         onMessage?.(textMessage);
                         responseMessages.push(textMessage);
                         break;
@@ -772,12 +772,12 @@ I've created the html design, please reveiw and let me know if you need any chan
                         this.outputChannel.appendLine(`===Stream finished with reason: ${chunk.finishReason}`);
                         this.outputChannel.appendLine(`${JSON.stringify(chunk)}`);
                         this.outputChannel.appendLine(`========================================`);
-                        
+
                         const resultMessage: CoreMessage = {
                             role: 'assistant',
                             content: chunk.finishReason === 'stop' ? 'Response completed successfully' : 'Response completed'
                         };
-                        
+
                         onMessage?.(resultMessage);
                         responseMessages.push(resultMessage);
                         break;
@@ -957,17 +957,18 @@ I've created the html design, please reveiw and let me know if you need any chan
                     enhancedErrorMessage = 'OpenRouter rate limit exceeded. Please wait before making more requests.';
                 } else if (errorMessage.toLowerCase().includes('model') && errorMessage.toLowerCase().includes('not found')) {
                     enhancedErrorMessage = 'OpenRouter model not found. Please check the model name in settings.';
+                } else if (errorMessage.toLowerCase().includes('bad request') || errorMessage.toLowerCase().includes('400')) {
+                    enhancedErrorMessage = 'OpenRouter bad request. Please check your model configuration and request parameters.';
+                } else if (errorMessage.toLowerCase().includes('invalid request')) {
+                    enhancedErrorMessage = 'OpenRouter invalid request format. Please check your prompt and settings.';
                 }
             }
 
             // Send error message if streaming callback is available
             if (onMessage) {
-                const errorResponse = {
-                    type: 'result',
-                    subtype: 'error',
-                    result: enhancedErrorMessage,
-                    session_id: sessionId,
-                    is_error: true
+                const errorResponse: CoreMessage = {
+                    role: 'assistant',
+                    content: `Error: ${enhancedErrorMessage}`
                 };
                 onMessage(errorResponse);
             }
@@ -1108,7 +1109,12 @@ I've created the html design, please reveiw and let me know if you need any chan
             'quota exceeded',
             'key not found',
             'key disabled',
-            'key expired'
+            'key expired',
+            'bad request',
+            '400',
+            'invalid model',
+            'model not found',
+            'invalid request'
         ];
 
         return authErrorPatterns.some(pattern => lowerError.includes(pattern));

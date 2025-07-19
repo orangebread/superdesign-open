@@ -8,7 +8,12 @@ export interface ToolErrorResponse {
   success: false;
   error: string;
   error_type?: 'validation' | 'security' | 'file_not_found' | 'permission' | 'execution' | 'unknown';
-  details?: any;
+  details?: {
+    name?: string;
+    stack?: string[];
+    originalError?: unknown;
+    [key: string]: unknown;
+  };
 }
 
 /**
@@ -16,7 +21,7 @@ export interface ToolErrorResponse {
  */
 export interface ToolSuccessResponse {
   success: true;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export type ToolResponse = ToolSuccessResponse | ToolErrorResponse;
@@ -25,12 +30,12 @@ export type ToolResponse = ToolSuccessResponse | ToolErrorResponse;
  * Generic error handler that converts exceptions/errors to standardized error responses
  */
 export function handleToolError(
-  error: unknown, 
+  error: unknown,
   context?: string,
   errorType: ToolErrorResponse['error_type'] = 'unknown'
 ): ToolErrorResponse {
   let errorMessage: string;
-  let details: any;
+  let details: ToolErrorResponse['details'];
 
   if (error instanceof Error) {
     errorMessage = error.message;
@@ -109,7 +114,7 @@ export function resolveWorkspacePath(filePath: string, context: ExecutionContext
 /**
  * Create a success response
  */
-export function createSuccessResponse(data: Record<string, any>): ToolSuccessResponse {
+export function createSuccessResponse(data: Record<string, unknown> | object): ToolSuccessResponse {
   return {
     success: true,
     ...data
@@ -117,9 +122,35 @@ export function createSuccessResponse(data: Record<string, any>): ToolSuccessRes
 }
 
 /**
+ * Standardized error message formatter
+ */
+export function formatErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+  if (typeof error === 'string') {
+    return error;
+  }
+  return 'An unknown error occurred';
+}
+
+/**
+ * Check if error is an authentication/API key error
+ */
+export function isAuthenticationError(errorMessage: string): boolean {
+  const lowerError = errorMessage.toLowerCase();
+  const authPatterns = [
+    'api key', 'authentication', 'unauthorized', 'invalid_api_key',
+    'permission_denied', 'api_key_invalid', 'unauthenticated',
+    'access denied', 'forbidden', '401', '403'
+  ];
+  return authPatterns.some(pattern => lowerError.includes(pattern));
+}
+
+/**
  * Validation helper for required string parameters
  */
-export function validateRequiredString(value: any, paramName: string): ToolErrorResponse | null {
+export function validateRequiredString(value: unknown, paramName: string): ToolErrorResponse | null {
   if (!value || typeof value !== 'string' || value.trim() === '') {
     return handleToolError(
       `${paramName} is required and must be a non-empty string`, 
