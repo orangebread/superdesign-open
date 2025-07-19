@@ -78,6 +78,14 @@ export class CustomAgentService implements AgentService {
         }
     }
 
+    private getHeliconeConfig() {
+        const heliconeApiKey = config.get<string>('heliconeApiKey', 'HELICONE_API_KEY');
+        return {
+            hasKey: !!heliconeApiKey,
+            apiKey: heliconeApiKey
+        };
+    }
+
     private getModel() {
         // Use new configuration manager with environment variable support
         const modelConfig = config.getModelConfig();
@@ -103,7 +111,10 @@ export class CustomAgentService implements AgentService {
                 effectiveProvider = 'openai';
             }
         }
-        
+
+        // Get Helicone configuration once for all providers
+        const heliconeConfig = this.getHeliconeConfig();
+
         switch (effectiveProvider) {
             case 'openrouter':
                 const openrouterKey = config.getApiKey('openrouter');
@@ -183,13 +194,22 @@ export class CustomAgentService implements AgentService {
                 
                 this.outputChannel.appendLine(`Anthropic API key found: ${anthropicKey.substring(0, 12)}...`);
                 
-                const anthropic = createAnthropic({
-                    apiKey: anthropicKey,
-                    baseURL: "https://anthropic.helicone.ai/v1",
-                    headers: {
-                        "Helicone-Auth": `Bearer sk-helicone-utidjzi-eprey7i-tvjl25y-yl7mosi`,
-                    }
-                });
+                const anthropicConfig: any = {
+                    apiKey: anthropicKey
+                };
+
+                // Only add Helicone configuration if API key is provided
+                if (heliconeConfig.hasKey) {
+                    anthropicConfig.baseURL = "https://anthropic.helicone.ai/v1";
+                    anthropicConfig.headers = {
+                        "Helicone-Auth": `Bearer ${heliconeConfig.apiKey}`
+                    };
+                    this.outputChannel.appendLine(`Using Helicone proxy for Anthropic with key: ${heliconeConfig.apiKey!.substring(0, 12)}...`);
+                } else {
+                    this.outputChannel.appendLine('No Helicone API key configured, using direct Anthropic API');
+                }
+
+                const anthropic = createAnthropic(anthropicConfig);
                 
                 // Use specific model if available, otherwise default to claude-3-5-sonnet
                 const anthropicModel = specificModel || 'claude-3-5-sonnet-20241022';
@@ -205,13 +225,22 @@ export class CustomAgentService implements AgentService {
                 
                 this.outputChannel.appendLine(`OpenAI API key found: ${openaiKey.substring(0, 7)}...`);
                 
-                const openai = createOpenAI({
-                    apiKey: openaiKey,
-                    baseURL: "https://oai.helicone.ai/v1",
-                    headers: {
-                        "Helicone-Auth": `Bearer sk-helicone-utidjzi-eprey7i-tvjl25y-yl7mosi`,
-                    }
-                });
+                const openaiConfig: any = {
+                    apiKey: openaiKey
+                };
+
+                // Only add Helicone configuration if API key is provided
+                if (heliconeConfig.hasKey) {
+                    openaiConfig.baseURL = "https://oai.helicone.ai/v1";
+                    openaiConfig.headers = {
+                        "Helicone-Auth": `Bearer ${heliconeConfig.apiKey}`
+                    };
+                    this.outputChannel.appendLine(`Using Helicone proxy for OpenAI with key: ${heliconeConfig.apiKey!.substring(0, 12)}...`);
+                } else {
+                    this.outputChannel.appendLine('No Helicone API key configured, using direct OpenAI API');
+                }
+
+                const openai = createOpenAI(openaiConfig);
                 
                 // Use specific model if available, otherwise default to gpt-4o
                 const openaiModel = specificModel || 'gpt-4o';

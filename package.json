@@ -64,6 +64,11 @@
         "category": "Superdesign"
       },
       {
+        "command": "superdesign.configureHeliconeApiKey",
+        "title": "Configure Helicone API Key",
+        "category": "Superdesign"
+      },
+      {
         "command": "superdesign.showChatSidebar",
         "title": "Show Chat Sidebar",
         "category": "Superdesign"
@@ -200,6 +205,11 @@
           ],
           "default": "medium",
           "description": "Reasoning effort level for OpenRouter models (low, medium, high)",
+          "scope": "application"
+        },
+        "superdesign.heliconeApiKey": {
+          "type": "string",
+          "description": "Helicone API key for monitoring and analytics (optional)",
           "scope": "application"
         }
       }

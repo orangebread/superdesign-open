@@ -23,6 +23,7 @@ This fork enhances the original SuperDesign with several key improvements:
 - **Environment Variable Support**: Secure API key management via `.env` files
 - **Flexible Provider Selection**: Easy switching between AI providers mid-conversation
 - **Enhanced Security**: Better API key handling and configuration management
+- **Helicone Integration**: Optional monitoring and analytics with secure configuration
 
 ### **🛠️ Developer Experience**
 - **Better Error Handling**: More informative error messages and debugging

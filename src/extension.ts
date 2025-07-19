@@ -1280,6 +1280,10 @@ export function activate(context: vscode.ExtensionContext) {
 		await configureOpenRouterApiKey();
 	});
 
+	const configureHeliconeApiKeyDisposable = vscode.commands.registerCommand('superdesign.configureHeliconeApiKey', async () => {
+		await configureHeliconeApiKey();
+	});
+
 
 	// Create the chat sidebar provider
 	const sidebarProvider = new ChatSidebarProvider(context.extensionUri, customAgent, Logger.getOutputChannel());
@@ -1394,10 +1398,11 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	context.subscriptions.push(
-		helloWorldDisposable, 
+		helloWorldDisposable,
 		configureApiKeyDisposable,
 		configureOpenAIApiKeyDisposable,
 		configureOpenRouterApiKeyDisposable,
+		configureHeliconeApiKeyDisposable,
 		sidebarDisposable,
 		showSidebarDisposable,
 		openCanvasDisposable,
@@ -1540,6 +1545,55 @@ async function configureOpenRouterApiKey() {
 			vscode.window.showInformationMessage('API key unchanged (already configured)');
 		} else {
 			vscode.window.showWarningMessage('No API key was set');
+		}
+	}
+}
+
+// Function to configure Helicone API key
+async function configureHeliconeApiKey() {
+	const currentKey = vscode.workspace.getConfiguration('superdesign').get<string>('heliconeApiKey');
+
+	const input = await vscode.window.showInputBox({
+		title: 'Configure Helicone API Key (Optional)',
+		prompt: 'Enter your Helicone API key for monitoring and analytics (get one from https://helicone.ai/)',
+		value: currentKey ? '••••••••••••••••' : '',
+		password: true,
+		placeHolder: 'sk-helicone-...',
+		validateInput: (value) => {
+			if (!value || value.trim().length === 0) {
+				return null; // Allow empty for optional key
+			}
+			if (value === '••••••••••••••••') {
+				return null; // User didn't change the masked value, that's OK
+			}
+			if (!value.startsWith('sk-helicone-')) {
+				return 'Helicone API keys should start with "sk-helicone-"';
+			}
+			return null;
+		}
+	});
+
+	if (input !== undefined) {
+		// Only update if user didn't just keep the masked value
+		if (input !== '••••••••••••••••') {
+			try {
+				await vscode.workspace.getConfiguration('superdesign').update(
+					'heliconeApiKey',
+					input.trim(),
+					vscode.ConfigurationTarget.Global
+				);
+				if (input.trim().length > 0) {
+					vscode.window.showInformationMessage('✅ Helicone API key configured successfully!');
+				} else {
+					vscode.window.showInformationMessage('✅ Helicone API key cleared (monitoring disabled)');
+				}
+			} catch (error) {
+				vscode.window.showErrorMessage(`Failed to save Helicone API key: ${error}`);
+			}
+		} else if (currentKey) {
+			vscode.window.showInformationMessage('Helicone API key unchanged (already configured)');
+		} else {
+			vscode.window.showInformationMessage('No Helicone API key was set (monitoring disabled)');
 		}
 	}
 }
