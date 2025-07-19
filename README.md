@@ -119,16 +119,35 @@ This fork maintains full compatibility with the original while adding these enha
 
 ## 🚀 Quick Setup Guide
 
-### 📦 Installation Options
+### 📦 Local Development (Recommended)
 
-#### Option 1: Install from VS Code Marketplace (Recommended for Users)
-1. **Install from Marketplace**
-   - Open VS Code/Cursor/Windsurf
-   - Go to Extensions (Ctrl+Shift+X)
-   - Search for "SuperDesign"
-   - Click Install
+**Prerequisites:**
+- Node.js 18+ and pnpm
+- VS Code, Cursor, or Windsurf IDE
 
-#### Option 2: Install Pre-built VSIX (Quick Local Install)
+**Simple Setup:**
+```bash
+# Clone and setup
+git clone https://github.com/orangebread/superdesign-open.git
+cd superdesign-open
+pnpm install
+
+# Build and package extension
+pnpm run package:vsix
+
+# Install the generated .vsix file
+code --install-extension superdesign-open-0.0.11.vsix
+```
+
+**Verify Installation:**
+1. Restart your IDE
+2. Look for the brain icon (🧠) in the Activity Bar
+3. Click it to open SuperDesign sidebar
+
+### 📦 Alternative: Use Pre-built VSIX
+
+If you prefer not to build from source:
+
 ```bash
 # Clone the repository
 git clone https://github.com/orangebread/superdesign-open.git
@@ -136,323 +155,70 @@ cd superdesign-open
 
 # Install the pre-built extension file
 code --install-extension superdesign-open-0.0.11.vsix
-
-# For detailed manual installation instructions for all IDEs,
-# see the "Manual VSIX Installation Instructions" section below
 ```
 
-#### Option 3: Local Development Installation (For Developers & Contributors)
+### 📋 Manual VSIX Installation
 
-**Prerequisites:**
-- Node.js 18+ and npm (or pnpm/yarn)
-- VS Code, Cursor, or Windsurf IDE
-- Git
-- Optional: `@vscode/vsce` for packaging (`npm install -g @vscode/vsce`)
-
-**Step 1: Clone and Setup**
+**Command Line (All IDEs):**
 ```bash
-# Clone the repository
-git clone https://github.com/orangebread/superdesign-open.git
-cd superdesign-open
-
-# Install dependencies (choose one)
-npm install
-# OR if you prefer pnpm (faster)
-pnpm install
-# OR if you prefer yarn
-yarn install
-```
-
-**Step 2: Build the Extension**
-```bash
-# Build for development (includes source maps)
-npm run compile
-
-# OR build for production (minified, no source maps)
-npm run package
-
-# OR watch mode for active development
-npm run watch
-```
-
-**Step 3: Install the Extension Locally**
-
-**Method A: Development Mode (Recommended for Development)**
-```bash
-# Open the project in VS Code
-code .
-
-# Press F5 to launch Extension Development Host
-# This opens a new VS Code window with your extension loaded
-```
-
-**Method B: Package and Install (Recommended for Testing)**
-```bash
-# Install vsce (VS Code Extension Manager) globally
-npm install -g @vscode/vsce
-
-# Option 1: Use the convenient npm script (builds + packages)
-npm run package:vsix
-
-# Option 2: Manual packaging
-vsce package --no-dependencies
-
-# Install the generated .vsix file
+# VS Code
 code --install-extension superdesign-open-0.0.11.vsix
 
-# OR see detailed manual installation instructions below
-```
-
-**Step 4: Verify Installation**
-1. Restart VS Code/Cursor/Windsurf
-2. Look for the brain icon (🧠) in the Activity Bar
-3. Click it to open SuperDesign sidebar
-4. You should see the SuperDesign interface
-
-### 📋 Manual VSIX Installation Instructions
-
-Once you have a `.vsix` file (either from the repository or after building), here are detailed instructions for installing it manually:
-
-#### 🖥️ **VS Code Installation**
-
-**Method 1: Command Line (Recommended)**
-```bash
-# Navigate to the folder containing the .vsix file
-cd /path/to/superdesign-open
-
-# Install the extension
-code --install-extension superdesign-open-0.0.11.vsix
-
-# If you have multiple VS Code installations, specify the path
-/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code --install-extension superdesign-open-0.0.11.vsix
-```
-
-**Method 2: VS Code UI**
-1. **Open VS Code**
-2. **Open Extensions Panel**: `Ctrl+Shift+X` (Windows/Linux) or `Cmd+Shift+X` (Mac)
-3. **Access Menu**: Click the three dots (`...`) in the Extensions panel header
-4. **Select Install Option**: Choose "Install from VSIX..."
-5. **Browse for File**: Navigate to and select `superdesign-open-0.0.11.vsix`
-6. **Install**: Click "Install" and wait for completion
-7. **Restart**: Restart VS Code when prompted
-
-#### 🎯 **Cursor Installation**
-
-**Method 1: Command Line**
-```bash
-# Navigate to the folder containing the .vsix file
-cd /path/to/superdesign-open
-
-# Install using Cursor's CLI
+# Cursor
 cursor --install-extension superdesign-open-0.0.11.vsix
 
-# Alternative: Use code command if Cursor is set as default
-code --install-extension superdesign-open-0.0.11.vsix
-```
-
-**Method 2: Cursor UI**
-1. **Open Cursor**
-2. **Open Extensions Panel**: `Ctrl+Shift+X` (Windows/Linux) or `Cmd+Shift+X` (Mac)
-3. **Access Menu**: Click the three dots (`...`) in the Extensions panel header
-4. **Select Install Option**: Choose "Install from VSIX..."
-5. **Browse for File**: Navigate to and select `superdesign-open-0.0.11.vsix`
-6. **Install**: Click "Install" and wait for completion
-7. **Restart**: Restart Cursor when prompted
-
-#### 🌊 **Windsurf Installation**
-
-**Method 1: Command Line**
-```bash
-# Navigate to the folder containing the .vsix file
-cd /path/to/superdesign-open
-
-# Install using Windsurf's CLI (if available)
+# Windsurf (try both)
 windsurf --install-extension superdesign-open-0.0.11.vsix
-
-# Alternative: Try the code command
 code --install-extension superdesign-open-0.0.11.vsix
 ```
 
-**Method 2: Windsurf UI**
-1. **Open Windsurf**
-2. **Open Extensions Panel**: `Ctrl+Shift+X` (Windows/Linux) or `Cmd+Shift+X` (Mac)
-3. **Access Menu**: Click the three dots (`...`) in the Extensions panel header
-4. **Select Install Option**: Choose "Install from VSIX..."
-5. **Browse for File**: Navigate to and select `superdesign-open-0.0.11.vsix`
-6. **Install**: Click "Install" and wait for completion
-7. **Restart**: Restart Windsurf when prompted
+**UI Method (All IDEs):**
+1. Open Extensions panel (`Ctrl+Shift+X` / `Cmd+Shift+X`)
+2. Click three dots (`...`) → "Install from VSIX..."
+3. Select `superdesign-open-0.0.11.vsix`
+4. Restart IDE
 
-#### ✅ **Verify Installation**
+**Verify Installation:**
+- Look for brain icon (🧠) in Activity Bar
+- Click it to open SuperDesign sidebar
 
-After installing the VSIX file:
+#### 🔧 **Troubleshooting**
 
-1. **Restart your IDE** completely (close and reopen)
-2. **Check Extensions List**:
-   - Open Extensions panel (`Ctrl+Shift+X` / `Cmd+Shift+X`)
-   - Search for "SuperDesign" or "superdesign-open"
-   - Verify it appears in the installed extensions list
-3. **Look for the Brain Icon** (🧠) in the Activity Bar (left sidebar)
-4. **Test the Extension**:
-   - Click the brain icon to open SuperDesign sidebar
-   - You should see the SuperDesign chat interface
-   - Try typing a simple prompt to test functionality
-
-#### 🔧 **Manual Installation Troubleshooting**
-
-**❌ "Extension not found" error**
-```bash
-# Check if the file exists and has correct permissions
-ls -la superdesign-open-0.0.11.vsix
-
-# Verify file integrity (should be a ZIP file)
-file superdesign-open-0.0.11.vsix
-
-# Try with full path
-code --install-extension /full/path/to/superdesign-open-0.0.11.vsix
-```
-
-**❌ "Invalid VSIX" error**
-- Ensure the `.vsix` file is not corrupted
-- Try downloading/building the VSIX file again
-- Check file size (should be several MB, not 0 bytes)
-
-**❌ Extension installs but doesn't appear**
-```bash
-# List all installed extensions
-code --list-extensions
-
-# Check if SuperDesign is in the list
-code --list-extensions | grep -i superdesign
-
-# Force reload the window
-# In IDE: Ctrl+Shift+P → "Developer: Reload Window"
-```
-
-**❌ Permission denied errors**
-```bash
-# On macOS/Linux, ensure you have write permissions
-sudo code --install-extension superdesign-open-0.0.11.vsix
-
-# Or change file permissions
-chmod 644 superdesign-open-0.0.11.vsix
-```
-
-**❌ Multiple IDE installations**
-```bash
-# For VS Code Insiders
-code-insiders --install-extension superdesign-open-0.0.11.vsix
-
-# For specific VS Code installation (macOS example)
-/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code --install-extension superdesign-open-0.0.11.vsix
-
-# For Cursor (if different from code command)
-/Applications/Cursor.app/Contents/Resources/app/bin/cursor --install-extension superdesign-open-0.0.11.vsix
-```
-
-#### 📁 **Alternative: Manual File Copy (Advanced)**
-
-If command-line installation fails, you can manually copy the extension:
-
-1. **Extract the VSIX file** (it's a ZIP file):
-   ```bash
-   # Create a temporary directory
-   mkdir temp-extension
-   cd temp-extension
-
-   # Extract the VSIX
-   unzip ../superdesign-open-0.0.11.vsix
-   ```
-
-2. **Find your extensions directory**:
-   - **Windows**: `%USERPROFILE%\.vscode\extensions\`
-   - **macOS**: `~/.vscode/extensions/`
-   - **Linux**: `~/.vscode/extensions/`
-   - **Cursor**: Replace `.vscode` with `.cursor`
-   - **Windsurf**: Replace `.vscode` with `.windsurf`
-
-3. **Copy the extension**:
-   ```bash
-   # Copy to extensions directory (adjust path as needed)
-   cp -r extension/ ~/.vscode/extensions/superdesign-open-0.0.11/
-   ```
-
-4. **Restart your IDE** and the extension should appear
+**Common Issues:**
+- **Extension not found**: Use full path to `.vsix` file
+- **Permission denied**: Try `sudo` on macOS/Linux
+- **Extension doesn't appear**: Restart IDE and check Extensions panel
+- **Multiple IDEs**: Use specific CLI commands (`code-insiders`, etc.)
 
 ### 🛠️ Development Workflow
 
-**For Active Development:**
+**Active Development:**
 ```bash
-# Start watch mode (rebuilds on file changes)
-npm run watch
+# Watch mode (auto-rebuild on changes)
+pnpm run watch
 
-# In another terminal, run tests
-npm run test
-
-# Run specific test suites
-npm run test:tools    # Test file operations
-npm run test:agent    # Test AI agent functionality
-npm run test:core     # Test core components
+# Run tests
+pnpm run test
 ```
 
-**Project Structure:**
-```
-superdesign-open/
-├── src/
-│   ├── extension.ts          # Main extension entry point
-│   ├── services/             # AI services (OpenAI, Anthropic, OpenRouter)
-│   ├── tools/                # File operation tools (read, write, edit, etc.)
-│   ├── providers/            # VS Code providers (sidebar, webview)
-│   ├── webview/              # React frontend components
-│   ├── utils/                # Utility functions and config
-│   └── types/                # TypeScript type definitions
-├── dist/                     # Built extension files
-├── esbuild.js               # Build configuration
-├── package.json             # Extension manifest and dependencies
-└── tsconfig.json            # TypeScript configuration
-```
-
-**Key Development Commands:**
+**Key Commands:**
 ```bash
-# Type checking
-npm run check-types
+# Build and package (recommended)
+pnpm run package:vsix
 
-# Linting
-npm run lint
+# Type checking and linting
+pnpm run check-types
+pnpm run lint
 
-# Build extension only
-node esbuild.js
-
-# Build with production optimizations
-node esbuild.js --production
-
-# Clean build (remove dist folder first)
-rm -rf dist && npm run compile
-
-# Package for distribution (no dependencies needed since esbuild bundles everything)
-vsce package --no-dependencies
-
-# Or use the convenient npm script (builds + packages in one command)
-npm run package:vsix
+# Manual build steps
+pnpm run compile
+pnpm run package
 ```
-
-**Why `--no-dependencies`?**
-SuperDesign uses esbuild to bundle all dependencies into the `dist/` folder, so the packaged extension doesn't need node_modules. This results in:
-- ⚡ **Faster packaging** (skips dependency analysis)
-- 📦 **Smaller file size** (no redundant dependencies)
-- 🛡️ **Better compatibility** (no dependency conflicts)
 
 **Debugging:**
 1. Open project in VS Code
-2. Set breakpoints in TypeScript files
-3. Press F5 to launch Extension Development Host
-4. Debug in the new VS Code window
-5. Check "Output" → "SuperDesign" for logs
-
-**Making Changes:**
-1. Edit source files in `src/`
-2. If using watch mode, changes auto-rebuild
-3. Reload Extension Development Host: `Ctrl+Shift+P` → "Developer: Reload Window"
-4. Test your changes in the development window
+2. Press F5 to launch Extension Development Host
+3. Test in the new window that opens
 
 ### ⚙️ Configuration
 
@@ -554,87 +320,31 @@ Your generated designs are saved locally inside `.superdesign/`.
 
 ### Common Issues
 
-**❌ "API key not configured" error**
-- Check your `.env` file has the correct API key format
-- Ensure the file is in your project root (same level as package.json)
-- Try using VSCode Command Palette: `SuperDesign: Configure API Key`
+**❌ API key not configured**: Check `.env` file or use Command Palette: `SuperDesign: Configure API Key`
 
-**❌ Model not responding**
-- Verify your API key has sufficient credits/quota
-- Try switching to a different model from the dropdown
-- Check VSCode Output → "SuperDesign" for detailed error logs
+**❌ Model not responding**: Verify API key credits and try different model
 
-**❌ Extension not loading**
-- Restart VSCode/Cursor
-- Check Extensions panel - ensure SuperDesign is enabled
-- Try reloading window: `Ctrl+Shift+P` → "Developer: Reload Window"
+**❌ Extension not loading**: Restart IDE and check Extensions panel
 
-**❌ Designs not saving**
-- Check if `.superdesign/` folder exists in your project
-- Ensure you have write permissions in the project directory
+**❌ Designs not saving**: Ensure `.superdesign/` folder exists with write permissions
 
-### Local Development Issues
+### Development Issues
 
-**❌ Build failures**
+**❌ Build failures**:
 ```bash
-# Clear node_modules and reinstall
-rm -rf node_modules package-lock.json
-npm install
-
-# Clear dist and rebuild
-rm -rf dist
-npm run compile
+rm -rf node_modules pnpm-lock.yaml
+pnpm install
+pnpm run package:vsix
 ```
 
-**❌ TypeScript errors**
-```bash
-# Check types without building
-npm run check-types
+**❌ Extension not loading**: Ensure you built with `pnpm run compile` and restart IDE
 
-# Fix common issues
-npm run lint --fix
-```
-
-**❌ Extension not loading in development**
-- Ensure you built the extension: `npm run compile`
-- Check for build errors in terminal
-- Try packaging and installing: `vsce package && code --install-extension *.vsix`
-- Restart VS Code completely
-
-**❌ React/Webview not updating**
-- The webview uses React - ensure you're rebuilding both extension and webview
-- Check browser console in webview (right-click → "Inspect")
-- Clear VS Code cache: `Ctrl+Shift+P` → "Developer: Reload Window"
-
-**❌ Missing dependencies**
-```bash
-# Install missing peer dependencies
-npm install --save-dev @types/vscode
-
-# Update all dependencies
-npm update
-```
-
-**❌ VSIX packaging fails**
-```bash
-# Install vsce globally
-npm install -g @vscode/vsce
-
-# Check .vscodeignore is correct
-cat .vscodeignore
-
-# Package with no dependencies (recommended for esbuild projects)
-vsce package --no-dependencies
-
-# Package with verbose output for debugging
-vsce package --no-dependencies --verbose
-```
+**❌ VSIX packaging fails**: Install `@vscode/vsce` globally and use `pnpm run package:vsix`
 
 ### Getting Help
 
-- 📖 Check the [documentation](https://superdesign.dev)
-- 💬 Join our [Discord community](https://discord.gg/FYr49d6cQ9)
-- 🐛 Report issues on [GitHub](https://github.com/orangebread/superdesign-open/issues)
+- 💬 [Discord community](https://discord.gg/FYr49d6cQ9)
+- 🐛 [GitHub Issues](https://github.com/orangebread/superdesign-open/issues)
 
 ---
 
@@ -684,13 +394,13 @@ We welcome contributions! Here's how to get started with local development:
 2. **Setup Development Environment**
    ```bash
    # Install dependencies
-   npm install
+   pnpm install
 
-   # Build the extension
-   npm run compile
+   # Build and package extension
+   pnpm run package:vsix
 
-   # Start development mode
-   npm run watch
+   # Install locally
+   code --install-extension superdesign-open-0.0.11.vsix
    ```
 
 3. **Test Your Changes**
@@ -698,29 +408,26 @@ We welcome contributions! Here's how to get started with local development:
    # Open in VS Code and press F5 to test
    code .
 
-   # Or package and install locally
-   npm install -g @vscode/vsce
-   vsce package --no-dependencies
-   code --install-extension *.vsix
+   # Or use watch mode for active development
+   pnpm run watch
    ```
 
 ### 📝 Development Guidelines
 
 **Code Style:**
 - Use TypeScript for all new code
-- Follow existing code patterns and naming conventions
-- Run `npm run lint` before committing
-- Ensure `npm run check-types` passes
+- Run `pnpm run lint` before committing
+- Ensure `pnpm run check-types` passes
 
 **Testing:**
 ```bash
 # Run all tests
-npm run test
+pnpm run test
 
 # Run specific test suites
-npm run test:tools    # File operations
-npm run test:agent    # AI functionality
-npm run test:core     # Core components
+pnpm run test:tools    # File operations
+pnpm run test:agent    # AI functionality
+pnpm run test:core     # Core components
 ```
 
 **Commit Guidelines:**
