@@ -1,6 +1,6 @@
 {
-  "name": "superdesign",
-  "displayName": "superdesign",
+  "name": "superdesign-open",
+  "displayName": "superdesign-open",
   "description": "The 1st Design Agent lives inside your IDE",
   "version": "0.0.11",
   "publisher": "iganbold",
@@ -168,6 +168,39 @@
           "type": "string",
           "description": "Specific AI model to use (e.g., gpt-4o, claude-3-5-sonnet-20241022)",
           "scope": "application"
+        },
+        "superdesign.openrouterSiteUrl": {
+          "type": "string",
+          "description": "Site URL for OpenRouter rankings (optional)",
+          "scope": "application"
+        },
+        "superdesign.openrouterSiteName": {
+          "type": "string",
+          "description": "Site name for OpenRouter rankings (optional)",
+          "scope": "application"
+        },
+        "superdesign.openrouterUsageTracking": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable usage tracking for OpenRouter API calls",
+          "scope": "application"
+        },
+        "superdesign.openrouterReasoningEnabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable reasoning tokens for supported OpenRouter models",
+          "scope": "application"
+        },
+        "superdesign.openrouterReasoningEffort": {
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ],
+          "default": "medium",
+          "description": "Reasoning effort level for OpenRouter models (low, medium, high)",
+          "scope": "application"
         }
       }
     }
@@ -179,6 +212,7 @@
     "watch:esbuild": "node esbuild.js --watch",
     "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
     "package": "npm run check-types && npm run lint && node esbuild.js --production",
+    "package:vsix": "npm run package && vsce package --no-dependencies",
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "npm run compile-tests && npm run compile && npm run lint",
@@ -217,6 +251,7 @@
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "ai": "^4.3.16",
+    "dotenv": "^17.2.0",
     "execa": "^9.6.0",
     "glob": "^11.0.3",
     "highlight.js": "^11.11.1",

@@ -3,6 +3,9 @@ dist
 node_modules
 .vscode-test/
 *.vsix
+# Environment variables
 .env
+.env.local
+.env.*.local
 /dist-test
 /.superdesign

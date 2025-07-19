@@ -27,32 +27,77 @@ const ModelSelector: React.FC<ModelSelectorProps> = ({ selectedModel, onModelCha
         { id: 'claude-4-sonnet-20250514', name: 'Claude 4 Sonnet', provider: 'Anthropic', category: 'Balanced' },
         { id: 'claude-3-7-sonnet-20250219', name: 'Claude 3.7 Sonnet', provider: 'Anthropic', category: 'Balanced' },
         { id: 'claude-3-5-sonnet-20241022', name: 'Claude 3.5 Sonnet', provider: 'Anthropic', category: 'Balanced' },
+
         // Google (OpenRouter)
         { id: 'google/gemini-2.5-pro', name: 'Gemini 2.5 Pro', provider: 'OpenRouter (Google)', category: 'Balanced' },
-        // Meta (OpenRouter)
+        { id: 'google/gemini-2.5-flash', name: 'Gemini 2.5 Flash', provider: 'OpenRouter (Google)', category: 'Fast' },
+
+        // Meta (OpenRouter) - Llama Models
         { id: 'meta-llama/llama-4-maverick-17b-128e-instruct', name: 'Llama 4 Maverick 17B', provider: 'OpenRouter (Meta)', category: 'Balanced' },
-        // DeepSeek (OpenRouter)
-        { id: 'deepseek/deepseek-r1', name: 'DeepSeek R1', provider: 'OpenRouter (DeepSeek)', category: 'Balanced' },
+        { id: 'meta-llama/llama-3.3-70b-instruct', name: 'Llama 3.3 70B Instruct', provider: 'OpenRouter (Meta)', category: 'Balanced' },
+        { id: 'meta-llama/llama-3.2-90b-vision-instruct', name: 'Llama 3.2 90B Vision', provider: 'OpenRouter (Meta)', category: 'Premium' },
+
+        // DeepSeek (OpenRouter) - Reasoning Models
+        { id: 'deepseek/deepseek-r1', name: 'DeepSeek R1', provider: 'OpenRouter (DeepSeek)', category: 'Premium' },
+        { id: 'deepseek/deepseek-v3', name: 'DeepSeek V3', provider: 'OpenRouter (DeepSeek)', category: 'Balanced' },
+        { id: 'deepseek/deepseek-coder-v2-instruct', name: 'DeepSeek Coder V2', provider: 'OpenRouter (DeepSeek)', category: 'Balanced' },
+
+        // Moonshot AI (OpenRouter) - Kimi Models
+        { id: 'moonshot/kimi-k2', name: 'Kimi K2', provider: 'OpenRouter (Moonshot)', category: 'Premium' },
+        { id: 'moonshot/moonshot-v1-32k', name: 'Moonshot V1 32K', provider: 'OpenRouter (Moonshot)', category: 'Balanced' },
+
         // Mistral (OpenRouter)
         { id: 'mistralai/mistral-small-3.2-24b-instruct-2506', name: 'Mistral Small 3.2 24B', provider: 'OpenRouter (Mistral)', category: 'Balanced' },
+        { id: 'mistralai/mistral-large-2411', name: 'Mistral Large 2411', provider: 'OpenRouter (Mistral)', category: 'Premium' },
+        { id: 'mistralai/codestral-latest', name: 'Codestral Latest', provider: 'OpenRouter (Mistral)', category: 'Balanced' },
+
         // xAI (OpenRouter)
-        { id: 'x-ai/grok-3', name: 'Grok 3', provider: 'OpenRouter (xAI)', category: 'Balanced' },
-        // Qwen (OpenRouter)
-        { id: 'qwen/qwen3-235b-a22b-04-28', name: 'Qwen3 235B', provider: 'OpenRouter (Qwen)', category: 'Balanced' },
+        { id: 'x-ai/grok-3', name: 'Grok 3', provider: 'OpenRouter (xAI)', category: 'Premium' },
+        { id: 'x-ai/grok-2-vision-beta', name: 'Grok 2 Vision Beta', provider: 'OpenRouter (xAI)', category: 'Balanced' },
+
+        // Qwen (OpenRouter) - Alibaba Models
+        { id: 'qwen/qwen3-235b-a22b-04-28', name: 'Qwen3 235B', provider: 'OpenRouter (Qwen)', category: 'Premium' },
+        { id: 'qwen/qwen2.5-72b-instruct', name: 'Qwen2.5 72B Instruct', provider: 'OpenRouter (Qwen)', category: 'Balanced' },
+        { id: 'qwen/qwen2.5-coder-32b-instruct', name: 'Qwen2.5 Coder 32B', provider: 'OpenRouter (Qwen)', category: 'Balanced' },
+
+        // Anthropic via OpenRouter (for comparison)
+        { id: 'anthropic/claude-3-5-sonnet-20241022', name: 'Claude 3.5 Sonnet (OR)', provider: 'OpenRouter (Anthropic)', category: 'Balanced' },
+
         // Perplexity (OpenRouter)
-        { id: 'perplexity/sonar-reasoning-pro', name: 'Sonar Reasoning Pro', provider: 'OpenRouter (Perplexity)', category: 'Balanced' },
+        { id: 'perplexity/sonar-reasoning-pro', name: 'Sonar Reasoning Pro', provider: 'OpenRouter (Perplexity)', category: 'Premium' },
+        { id: 'perplexity/llama-3.1-sonar-large-128k-online', name: 'Sonar Large 128K Online', provider: 'OpenRouter (Perplexity)', category: 'Balanced' },
+
         // Microsoft (OpenRouter)
         { id: 'microsoft/phi-4-reasoning-plus-04-30', name: 'Phi-4 Reasoning Plus', provider: 'OpenRouter (Microsoft)', category: 'Balanced' },
+        { id: 'microsoft/wizardlm-2-8x22b', name: 'WizardLM 2 8x22B', provider: 'OpenRouter (Microsoft)', category: 'Premium' },
+
         // NVIDIA (OpenRouter)
-        { id: 'nvidia/llama-3.3-nemotron-super-49b-v1', name: 'Llama 3.3 Nemotron Super 49B', provider: 'OpenRouter (NVIDIA)', category: 'Balanced' },
+        { id: 'nvidia/llama-3.3-nemotron-super-49b-v1', name: 'Llama 3.3 Nemotron Super 49B', provider: 'OpenRouter (NVIDIA)', category: 'Premium' },
+        { id: 'nvidia/nemotron-4-340b-instruct', name: 'Nemotron 4 340B Instruct', provider: 'OpenRouter (NVIDIA)', category: 'Premium' },
+
         // Cohere (OpenRouter)
         { id: 'cohere/command-a-03-2025', name: 'Command A', provider: 'OpenRouter (Cohere)', category: 'Balanced' },
+        { id: 'cohere/command-r-plus-08-2024', name: 'Command R+ 08-2024', provider: 'OpenRouter (Cohere)', category: 'Balanced' },
+
         // Amazon (OpenRouter)
-        { id: 'amazon/nova-pro-v1', name: 'Nova Pro', provider: 'OpenRouter (Amazon)', category: 'Balanced' },
+        { id: 'amazon/nova-pro-v1', name: 'Nova Pro', provider: 'OpenRouter (Amazon)', category: 'Premium' },
+        { id: 'amazon/nova-lite-v1', name: 'Nova Lite', provider: 'OpenRouter (Amazon)', category: 'Fast' },
+
         // Inflection (OpenRouter)
         { id: 'inflection/inflection-3-productivity', name: 'Inflection 3 Productivity', provider: 'OpenRouter (Inflection)', category: 'Balanced' },
+
         // Reka (OpenRouter)
-        { id: 'rekaai/reka-flash-3', name: 'Reka Flash 3', provider: 'OpenRouter (Reka)', category: 'Balanced' },
+        { id: 'rekaai/reka-flash-3', name: 'Reka Flash 3', provider: 'OpenRouter (Reka)', category: 'Fast' },
+        { id: 'rekaai/reka-core-20240904', name: 'Reka Core', provider: 'OpenRouter (Reka)', category: 'Balanced' },
+
+        // 01.AI (OpenRouter) - Yi Models
+        { id: '01-ai/yi-lightning', name: 'Yi Lightning', provider: 'OpenRouter (01.AI)', category: 'Fast' },
+        { id: '01-ai/yi-large', name: 'Yi Large', provider: 'OpenRouter (01.AI)', category: 'Balanced' },
+
+        // Hugging Face (OpenRouter) - Open Source Models
+        { id: 'huggingfaceh4/zephyr-7b-beta', name: 'Zephyr 7B Beta', provider: 'OpenRouter (HuggingFace)', category: 'Fast' },
+        { id: 'nousresearch/nous-hermes-2-mixtral-8x7b-dpo', name: 'Nous Hermes 2 Mixtral 8x7B', provider: 'OpenRouter (Nous)', category: 'Balanced' },
+
         // Existing OpenAI (direct)
         { id: 'gpt-4.1', name: 'GPT-4.1', provider: 'OpenAI', category: 'Balanced' },
         { id: 'gpt-4.1-mini', name: 'GPT-4.1 Mini', provider: 'OpenAI', category: 'Fast' }

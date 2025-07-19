@@ -24,11 +24,7 @@ const multieditParametersSchema = z.object({
   fail_fast: z.boolean().optional().describe('Whether to stop on first error (true) or continue with remaining edits (false, default)')
 });
 
-interface SingleEdit {
-  old_string: string;
-  new_string: string;
-  expected_replacements?: number;
-}
+type SingleEdit = z.infer<typeof singleEditSchema>;
 
 interface EditResult {
   edit: SingleEdit;

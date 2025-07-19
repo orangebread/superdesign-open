@@ -133,18 +133,24 @@ async function getCssFileContent(filePath: string, sidebarProvider: ChatSidebarP
 	try {
 		// Handle relative paths - resolve them to workspace root
 		let resolvedPath = filePath;
-		
+
 		if (!path.isAbsolute(filePath)) {
 			const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
 			if (!workspaceFolder) {
-				throw new Error('No workspace folder found');
+				// Send a user-friendly error instead of throwing
+				sidebarProvider.sendMessage({
+					command: 'cssFileContentResponse',
+					filePath: filePath,
+					error: 'Please open a workspace folder to load CSS files'
+				});
+				return;
 			}
-			
+
 			// If path doesn't start with .superdesign, add it
 			if (!filePath.startsWith('.superdesign/') && filePath.startsWith('design_iterations/')) {
 				resolvedPath = `.superdesign/${filePath}`;
 			}
-			
+
 			resolvedPath = path.join(workspaceFolder.uri.fsPath, resolvedPath);
 		}
 		

@@ -108,8 +108,16 @@ const ThemePreviewCard: React.FC<ThemePreviewCardProps> = ({
           setCurrentCssContent(response);
           setIsExpanded(true); // Auto-expand when CSS loads successfully
         } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : 'Failed to load CSS';
           console.warn('Failed to load CSS from file, falling back to cssSheet:', error);
-          setCssLoadError(error instanceof Error ? error.message : 'Failed to load CSS');
+
+          // Check if it's a workspace-related error and provide better UX
+          if (errorMessage.includes('workspace folder') || errorMessage.includes('Please open a workspace')) {
+            setCssLoadError('Open a workspace to load CSS files');
+          } else {
+            setCssLoadError(errorMessage);
+          }
+
           setCurrentCssContent(cssSheet || '');
         } finally {
           setIsLoadingCss(false);

@@ -7,6 +7,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as os from 'os';
 import { AgentService, ExecutionContext } from '../types/agent';
+import { config } from '../utils/config';
 import { createReadTool } from '../tools/read-tool';
 import { createWriteTool } from '../tools/write-tool';
 import { createBashTool } from '../tools/bash-tool';
@@ -78,15 +79,19 @@ export class CustomAgentService implements AgentService {
     }
 
     private getModel() {
-        const config = vscode.workspace.getConfiguration('superdesign');
-        const specificModel = config.get<string>('aiModel');
-        const provider = config.get<string>('aiModelProvider', 'anthropic');
-        
+        // Use new configuration manager with environment variable support
+        const modelConfig = config.getModelConfig();
+        const specificModel = modelConfig.model;
+        const provider = modelConfig.provider;
+
         this.outputChannel.appendLine(`Using AI provider: ${provider}`);
         if (specificModel) {
             this.outputChannel.appendLine(`Using specific AI model: ${specificModel}`);
         }
-        
+
+        // Log configuration sources for debugging
+        config.logConfigStatus();
+
         // Determine provider from model name if specific model is set
         let effectiveProvider = provider;
         if (specificModel) {
@@ -101,26 +106,79 @@ export class CustomAgentService implements AgentService {
         
         switch (effectiveProvider) {
             case 'openrouter':
-                const openrouterKey = config.get<string>('openrouterApiKey');
+                const openrouterKey = config.getApiKey('openrouter');
                 if (!openrouterKey) {
-                    throw new Error('OpenRouter API key not configured. Please run "Configure OpenRouter API Key" command.');
+                    throw new Error('OpenRouter API key not configured. Please set OPENROUTER_API_KEY environment variable or run "Configure OpenRouter API Key" command.');
                 }
-                
+
                 this.outputChannel.appendLine(`OpenRouter API key found: ${openrouterKey.substring(0, 12)}...`);
-                
-                const openrouter = createOpenRouter({
+
+                // Get OpenRouter-specific configuration using the new config manager
+                const openrouterSettings = config.getOpenRouterConfig();
+                const { siteUrl, siteName, usageTracking, reasoningEnabled, reasoningEffort } = openrouterSettings;
+
+                // Enhanced OpenRouter configuration with best practices
+                const openrouterClientConfig: any = {
                     apiKey: openrouterKey
-                });
-                
+                };
+
+                // Add site identification headers for OpenRouter rankings
+                if (siteUrl || siteName) {
+                    openrouterClientConfig.extraHeaders = {};
+                    if (siteUrl) {
+                        openrouterClientConfig.extraHeaders['HTTP-Referer'] = siteUrl;
+                    }
+                    if (siteName) {
+                        openrouterClientConfig.extraHeaders['X-Title'] = siteName;
+                    }
+                }
+
+                // Enable usage tracking if configured
+                if (usageTracking) {
+                    openrouterClientConfig.extraBody = {
+                        usage: {
+                            include: true
+                        }
+                    };
+                }
+
+                const openrouter = createOpenRouter(openrouterClientConfig);
+
                 // Use specific model if available, otherwise default to Claude 3.7 Sonnet via OpenRouter
                 const openrouterModel = specificModel || 'anthropic/claude-3-7-sonnet-20250219';
                 this.outputChannel.appendLine(`Using OpenRouter model: ${openrouterModel}`);
-                return openrouter.chat(openrouterModel);
+                this.outputChannel.appendLine(`OpenRouter usage tracking: ${usageTracking ? 'enabled' : 'disabled'}`);
+
+                // Return model with enhanced configuration
+                const modelConfig: any = {};
+
+                // Build extraBody configuration
+                const extraBody: any = {};
+
+                if (usageTracking) {
+                    extraBody.usage = {
+                        include: true
+                    };
+                }
+
+                // Add reasoning configuration for supported models
+                if (reasoningEnabled && this.supportsReasoning(openrouterModel)) {
+                    extraBody.reasoning = {
+                        effort: reasoningEffort
+                    };
+                    this.outputChannel.appendLine(`OpenRouter reasoning enabled: ${reasoningEffort} effort`);
+                }
+
+                if (Object.keys(extraBody).length > 0) {
+                    modelConfig.extraBody = extraBody;
+                }
+
+                return openrouter.chat(openrouterModel, modelConfig);
                 
             case 'anthropic':
-                const anthropicKey = config.get<string>('anthropicApiKey');
+                const anthropicKey = config.getApiKey('anthropic');
                 if (!anthropicKey) {
-                    throw new Error('Anthropic API key not configured. Please run "Configure Anthropic API Key" command.');
+                    throw new Error('Anthropic API key not configured. Please set ANTHROPIC_API_KEY environment variable or run "Configure Anthropic API Key" command.');
                 }
                 
                 this.outputChannel.appendLine(`Anthropic API key found: ${anthropicKey.substring(0, 12)}...`);
@@ -140,9 +198,9 @@ export class CustomAgentService implements AgentService {
                 
             case 'openai':
             default:
-                const openaiKey = config.get<string>('openaiApiKey');
+                const openaiKey = config.getApiKey('openai');
                 if (!openaiKey) {
-                    throw new Error('OpenAI API key not configured. Please run "Configure OpenAI API Key" command.');
+                    throw new Error('OpenAI API key not configured. Please set OPENAI_API_KEY environment variable or run "Configure OpenAI API Key" command.');
                 }
                 
                 this.outputChannel.appendLine(`OpenAI API key found: ${openaiKey.substring(0, 7)}...`);
@@ -845,31 +903,110 @@ I've created the html design, please reveiw and let me know if you need any chan
 
             this.outputChannel.appendLine(`Query completed successfully. Total messages: ${responseMessages.length}`);
             this.outputChannel.appendLine(`Complete response: "${messageBuffer}"`);
-            
+
+            // Log usage information if available (for OpenRouter)
+            this.logOpenRouterUsage(result);
+
             return responseMessages;
 
         } catch (error) {
-            this.outputChannel.appendLine(`Custom Agent query failed: ${error}`);
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            this.outputChannel.appendLine(`Custom Agent query failed: ${errorMessage}`);
             this.outputChannel.appendLine(`Error stack: ${error instanceof Error ? error.stack : 'No stack trace'}`);
-            
+
+            // Enhanced error handling for OpenRouter
+            let enhancedErrorMessage = errorMessage;
+            const modelConfig = config.getModelConfig();
+            const provider = modelConfig.provider;
+
+            if (provider === 'openrouter' || (modelConfig.model && modelConfig.model.includes('/'))) {
+                if (this.isApiKeyAuthError(errorMessage)) {
+                    enhancedErrorMessage = 'OpenRouter authentication failed. Please check your API key in settings.';
+                } else if (errorMessage.toLowerCase().includes('credit') || errorMessage.toLowerCase().includes('quota')) {
+                    enhancedErrorMessage = 'OpenRouter credit limit reached. Please check your account balance.';
+                } else if (errorMessage.toLowerCase().includes('rate limit')) {
+                    enhancedErrorMessage = 'OpenRouter rate limit exceeded. Please wait before making more requests.';
+                } else if (errorMessage.toLowerCase().includes('model') && errorMessage.toLowerCase().includes('not found')) {
+                    enhancedErrorMessage = 'OpenRouter model not found. Please check the model name in settings.';
+                }
+            }
+
             // Send error message if streaming callback is available
             if (onMessage) {
-                const errorMessage = {
+                const errorResponse = {
                     type: 'result',
                     subtype: 'error',
-                    result: error instanceof Error ? error.message : String(error),
+                    result: enhancedErrorMessage,
                     session_id: sessionId,
                     is_error: true
                 };
-                onMessage(errorMessage);
+                onMessage(errorResponse);
             }
-            
-            throw error;
+
+            // Throw enhanced error
+            const enhancedError = new Error(enhancedErrorMessage);
+            enhancedError.stack = error instanceof Error ? error.stack : undefined;
+            throw enhancedError;
         }
     }
 
     get isReady(): boolean {
         return this.isInitialized;
+    }
+
+    /**
+     * Check if a model supports reasoning tokens
+     */
+    private supportsReasoning(modelName: string): boolean {
+        // Models that support reasoning tokens
+        const reasoningModels = [
+            'anthropic/claude-3-7-sonnet:thinking',
+            'anthropic/claude-3-5-sonnet:thinking',
+            'anthropic/claude-4-opus:thinking',
+            'anthropic/claude-4-sonnet:thinking',
+            'openai/o1-preview',
+            'openai/o1-mini',
+            'openai/o3-mini',
+            'x-ai/grok-3',
+            'google/gemini-2.5-pro-thinking',
+            'deepseek/deepseek-r1'
+        ];
+
+        // Check for exact matches only
+        return reasoningModels.includes(modelName);
+    }
+
+    /**
+     * Log OpenRouter usage information if available
+     */
+    private logOpenRouterUsage(result: any): void {
+        try {
+            // Check for usage information in the result
+            if (result?.providerMetadata?.openrouter?.usage) {
+                const usage = result.providerMetadata.openrouter.usage;
+                this.outputChannel.appendLine('=== OPENROUTER USAGE TRACKING ===');
+                this.outputChannel.appendLine(`Total Tokens: ${usage.totalTokens || usage.total_tokens || 'N/A'}`);
+                this.outputChannel.appendLine(`Prompt Tokens: ${usage.promptTokens || usage.prompt_tokens || 'N/A'}`);
+                this.outputChannel.appendLine(`Completion Tokens: ${usage.completionTokens || usage.completion_tokens || 'N/A'}`);
+                this.outputChannel.appendLine(`Cost: ${usage.cost || 'N/A'} credits`);
+
+                if (usage.cost_details?.upstream_inference_cost) {
+                    this.outputChannel.appendLine(`Upstream Cost: ${usage.cost_details.upstream_inference_cost} credits`);
+                }
+
+                if (usage.completion_tokens_details?.reasoning_tokens) {
+                    this.outputChannel.appendLine(`Reasoning Tokens: ${usage.completion_tokens_details.reasoning_tokens}`);
+                }
+
+                if (usage.prompt_tokens_details?.cached_tokens) {
+                    this.outputChannel.appendLine(`Cached Tokens: ${usage.prompt_tokens_details.cached_tokens}`);
+                }
+
+                this.outputChannel.appendLine('=== END USAGE TRACKING ===');
+            }
+        } catch (error) {
+            this.outputChannel.appendLine(`Error logging usage: ${error}`);
+        }
     }
 
     async waitForInitialization(): Promise<boolean> {
@@ -884,10 +1021,10 @@ I've created the html design, please reveiw and let me know if you need any chan
     }
 
     hasApiKey(): boolean {
-        const config = vscode.workspace.getConfiguration('superdesign');
-        const specificModel = config.get<string>('aiModel');
-        const provider = config.get<string>('aiModelProvider', 'anthropic');
-        
+        const modelConfig = config.getModelConfig();
+        const specificModel = modelConfig.model;
+        const provider = modelConfig.provider;
+
         // Determine provider from model name if specific model is set
         let effectiveProvider = provider;
         if (specificModel) {
@@ -899,15 +1036,15 @@ I've created the html design, please reveiw and let me know if you need any chan
                 effectiveProvider = 'openai';
             }
         }
-        
+
         switch (effectiveProvider) {
             case 'openrouter':
-                return !!config.get<string>('openrouterApiKey');
+                return config.hasApiKey('openrouter');
             case 'anthropic':
-                return !!config.get<string>('anthropicApiKey');
+                return config.hasApiKey('anthropic');
             case 'openai':
             default:
-                return !!config.get<string>('openaiApiKey');
+                return config.hasApiKey('openai');
         }
     }
 
@@ -915,14 +1052,36 @@ I've created the html design, please reveiw and let me know if you need any chan
         if (!errorMessage) {
             return false;
         }
-        
+
         const lowerError = errorMessage.toLowerCase();
-        return lowerError.includes('api key') ||
-               lowerError.includes('authentication') ||
-               lowerError.includes('unauthorized') ||
-               lowerError.includes('invalid_api_key') ||
-               lowerError.includes('permission_denied') ||
-               lowerError.includes('api_key_invalid') ||
-               lowerError.includes('unauthenticated');
+
+        // Common authentication error patterns
+        const authErrorPatterns = [
+            'api key',
+            'authentication',
+            'unauthorized',
+            'invalid_api_key',
+            'permission_denied',
+            'api_key_invalid',
+            'unauthenticated',
+            'access denied',
+            'forbidden',
+            '401',
+            '403',
+            // OpenRouter-specific patterns
+            'invalid api key',
+            'openrouter api key',
+            'bearer token',
+            'authorization header',
+            'credit limit',
+            'insufficient credits',
+            'rate limit',
+            'quota exceeded',
+            'key not found',
+            'key disabled',
+            'key expired'
+        ];
+
+        return authErrorPatterns.some(pattern => lowerError.includes(pattern));
     }
 } 
