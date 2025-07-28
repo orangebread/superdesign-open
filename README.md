@@ -15,9 +15,10 @@ Works seamlessly with Cursor, Windsurf, Claude Code, and plain VS Code.
 This fork enhances the original SuperDesign with several key improvements:
 
 ### **🎯 Enhanced AI Model Support**
-- **50+ AI Models**: Expanded support for DeepSeek R1, Kimi K2, Grok 3, and many more
+- **60+ AI Models**: Expanded support for DeepSeek R1, Kimi K2, Grok 3, and 20+ free models
 - **Multi-Provider Architecture**: Seamless switching between OpenRouter, Anthropic, and OpenAI
 - **Advanced Model Features**: Support for reasoning models and specialized capabilities
+- **🆓 Free Models**: Access to powerful models like Llama 3.1 405B, DeepSeek R1, and Qwen3 at no cost
 
 ### **⚙️ Improved Configuration**
 - **Environment Variable Support**: Secure API key management via `.env` files
@@ -76,18 +77,151 @@ This fork maintains full compatibility with the original while adding these enha
 
 ## 🛠️ Getting Started
 
+### 🚀 Easy Installation (Recommended)
+
+**Step 1: Clone the Repository**
+```bash
+git clone https://github.com/orangebread/superdesign-open.git
+cd superdesign-open
+```
+
+**Step 2: Run the Installer**
+
+**For macOS/Linux:**
+```bash
+chmod +x install.sh
+./install.sh
+```
+
+**For Windows (Command Prompt):**
+```cmd
+install.bat
+```
+
+**For Windows (PowerShell):**
+```powershell
+powershell -ExecutionPolicy Bypass -File install.ps1
+```
+
+**What the installer does:**
+- ✅ Checks system requirements (Node.js, npm, VSCode)
+- ✅ Installs pnpm for faster builds (optional)
+- ✅ Installs all dependencies automatically
+- ✅ Builds and packages the extension (.vsix file)
+- ✅ Attempts automatic VSCode installation
+- ✅ Provides detailed manual installation guide if needed
+- ✅ Sets up configuration files (.env)
+- ✅ Guides you through next steps
+
+**If VSCode CLI is not available**, the installer will:
+- ✅ Complete the build successfully
+- 📋 Show you exactly where the .vsix file is located
+- 📖 Provide 3 different manual installation methods
+- 🎯 Guide you through the entire process step-by-step
+
+### 📦 Manual VSIX Installation
+
+If you prefer to install manually or the automatic installer doesn't work:
+
+**Step 1: Get the VSIX File**
+
+*Option A: Download Pre-built*
+```bash
+# Download the latest release
+curl -L -o superdesign-open.vsix https://github.com/orangebread/superdesign-open/releases/latest/download/superdesign-open.vsix
+```
+
+*Option B: Build from Source*
+```bash
+git clone https://github.com/orangebread/superdesign-open.git
+cd superdesign-open
+npm install  # or pnpm install
+npm run compile
+npm run package
+# This creates superdesign-open-0.0.11.vsix
+```
+
+**Step 2: Install the VSIX File**
+
+**Method 1: VSCode Command Line** (if CLI is available)
+```bash
+code --install-extension superdesign-open-0.0.11.vsix
+```
+
+**Method 2: VSCode GUI** (recommended)
+1. Open VSCode
+2. Press `Ctrl+Shift+P` (or `Cmd+Shift+P` on macOS)
+3. Type: `Extensions: Install from VSIX...`
+4. Select your `superdesign-open-0.0.11.vsix` file
+5. Restart VSCode
+
+**Method 3: Drag & Drop**
+1. Open VSCode
+2. Go to Extensions panel (`Ctrl+Shift+X` / `Cmd+Shift+X`)
+3. Drag the `.vsix` file into the Extensions panel
+4. Restart VSCode
+
+**Step 3: Verify Installation**
+- Look for the brain icon (🧠) in the Activity Bar
+- Click it to open SuperDesign sidebar
+- If you don't see it, restart VSCode
+
 ### 🎯 Quick Start (3 minutes)
 
-1. **Install the Extension** from the Cursor/VS Code Marketplace
+1. **Install the Extension** using the easy installer above or manual VSIX installation
 2. **Configure API Key** (choose one):
-   - **Recommended**: OpenRouter API key for access to 40+ models
+   - **Recommended**: OpenRouter API key for access to 60+ models including 20+ free models
    - Anthropic API key for Claude models
    - OpenAI API key for GPT models
-3. **Open SuperDesign** sidebar panel (click the brain icon)
+3. **Open SuperDesign** sidebar panel (click the brain icon 🧠)
 4. **Select a Model** from the dropdown (try DeepSeek R1 or Kimi K2)
 5. **Type a prompt** (e.g., _"Design a modern login screen with dark mode"_)
 6. **View & iterate** on generated mockups, components, and wireframes
 7. **Copy code** and paste into your project
+
+### 🔧 Troubleshooting Installation
+
+**Common Issues & Solutions:**
+
+**❌ "Node.js not found"**
+- **macOS**: `brew install node` (requires [Homebrew](https://brew.sh/))
+- **Windows**: Download from [nodejs.org](https://nodejs.org/)
+- **Linux**: `sudo apt install nodejs npm` (Ubuntu/Debian) or `sudo yum install nodejs npm` (CentOS/RHEL)
+
+**❌ "VSCode CLI not found"**
+- Don't worry! The installer will provide manual installation instructions
+- To enable CLI: Open VSCode → `Cmd/Ctrl+Shift+P` → "Shell Command: Install 'code' command in PATH"
+
+**❌ "Permission denied" (macOS/Linux)**
+```bash
+chmod +x install.sh
+# If npm permission issues:
+sudo chown -R $(whoami) ~/.npm
+```
+
+**❌ "Execution policy" error (Windows PowerShell)**
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+**❌ Extension not appearing after installation**
+1. Restart VSCode completely
+2. Check Extensions panel (`Ctrl+Shift+X`) for "SuperDesign"
+3. Look for brain icon (🧠) in Activity Bar
+4. Try: `Ctrl+Shift+P` → "SuperDesign: Open Chat"
+
+**❌ Build fails**
+```bash
+# Clean install
+rm -rf node_modules package-lock.json
+npm install
+npm run compile
+```
+
+**Need Help?**
+- 📖 Check [INSTALL.md](./INSTALL.md) for detailed instructions
+- 🐛 [Open an issue](https://github.com/orangebread/superdesign-open/issues)
+- 💬 [Join Discord](https://discord.gg/FYr49d6cQ9)
 
 ### 🎨 Example Prompts to Try
 
@@ -222,12 +356,35 @@ pnpm run package
 
 ### ⚙️ Configuration
 
-SuperDesign supports multiple AI providers with 50+ powerful models.
+SuperDesign supports multiple AI providers with 60+ powerful models including 20+ free models.
 
 ### 🔑 API Key Setup (Choose Your Provider)
 
+**🆓 Want to try free models first?** Get an OpenRouter API key - it's free and gives you access to 20+ models at no cost!
+
+**Step 1: Get Your API Key**
+
+**🌟 OpenRouter (Recommended - 60+ models, 20+ free)**
+1. Visit [openrouter.ai](https://openrouter.ai/)
+2. Sign up for a free account
+3. Go to [API Keys](https://openrouter.ai/keys)
+4. Create a new API key
+5. **Free models available**: DeepSeek R1, Llama 3.1 405B, Qwen3 Coder, Kimi K2, and more!
+
+**🤖 Anthropic (Claude models)**
+1. Visit [console.anthropic.com](https://console.anthropic.com/)
+2. Create account and add payment method
+3. Generate API key
+
+**🧠 OpenAI (GPT models)**
+1. Visit [platform.openai.com](https://platform.openai.com/)
+2. Create account and add payment method
+3. Generate API key
+
+**Step 2: Configure SuperDesign**
+
 **Option 1: Environment Variables (Recommended)**
-1. Copy `.env.example` to `.env` in your project root
+1. The installer creates a `.env` file for you, or copy `.env.example` to `.env`
 2. Add your API keys:
 ```bash
 # Choose one or more providers
@@ -235,14 +392,20 @@ ANTHROPIC_API_KEY=sk-ant-api03-your-key-here
 OPENAI_API_KEY=sk-your-openai-key-here
 OPENROUTER_API_KEY=sk-or-your-openrouter-key-here
 
-# Optional: Configure model preferences
+# Optional: Set default provider and model
 AI_MODEL_PROVIDER=openrouter
-AI_MODEL=deepseek/deepseek-r1
+AI_MODEL=deepseek/deepseek-r1:free  # Free model!
 ```
 
 **Option 2: VSCode Settings (Fallback)**
 - Use Command Palette: `SuperDesign: Configure API Key`
 - Or manually set in VSCode settings
+
+**Step 3: Start Using SuperDesign**
+1. Restart VSCode
+2. Click the brain icon (🧠) in Activity Bar
+3. Select a model from the dropdown
+4. Start chatting!
 
 ### 🤖 Supported Providers & Models
 
@@ -266,6 +429,22 @@ AI_MODEL=deepseek/deepseek-r1
 - **GPT-4.1 Mini** - `gpt-4.1-mini`
 - **Nova Lite** - `amazon/nova-lite-v1`
 
+#### **🆓 Free Models (No Cost)**
+- **Qwen3 Coder** - `qwen/qwen3-coder:free` (Coding specialist)
+- **Qwen3 235B A22B** - `qwen/qwen3-235b-a22b-2507:free` (Large scale)
+- **Kimi K2** - `moonshotai/kimi-k2:free` (Advanced reasoning)
+- **DeepSeek R1T2 Chimera** - `tngtech/deepseek-r1t2-chimera:free` (Reasoning)
+- **DeepSeek R1** - `deepseek/deepseek-r1:free` (Reasoning)
+- **DeepSeek V3** - `deepseek/deepseek-chat-v3-0324:free` (General purpose)
+- **Llama 3.1 405B** - `meta-llama/llama-3.1-405b-instruct:free` (Massive scale)
+- **Llama 3.3 70B** - `meta-llama/llama-3.3-70b-instruct:free` (Balanced)
+- **Llama 3.2 11B Vision** - `meta-llama/llama-3.2-11b-vision-instruct:free` (Vision)
+- **Qwen 2.5 72B** - `qwen/qwen-2.5-72b-instruct:free` (General purpose)
+- **Qwen 2.5 Coder 32B** - `qwen/qwen-2.5-coder-32b-instruct:free` (Coding)
+- **Mistral 7B** - `mistralai/mistral-7b-instruct:free` (Lightweight)
+- **Gemma 3 27B** - `google/gemma-3-27b-it:free` (Google's open model)
+- **Reka Flash 3** - `rekaai/reka-flash-3:free` (Fast inference)
+
 #### **🔧 Specialized Models**
 - **Coding**: DeepSeek Coder V2, Qwen2.5 Coder, Codestral
 - **Vision**: Llama 3.2 90B Vision, Grok 2 Vision Beta
@@ -276,7 +455,9 @@ AI_MODEL=deepseek/deepseek-r1
 
 - **🏠 Anthropic** (4 models) - Direct API access to Claude models
 - **🤖 OpenAI** (2 models) - Direct API access to GPT models
-- **🌍 OpenRouter** (40+ models) - Access to models from:
+- **🌍 OpenRouter** (60+ models) - Access to models from:
+  - **🆓 Free Tier**: 20+ free models with no cost (rate limited)
+  - **💰 Paid Tier**: Premium models with usage-based pricing
   - Meta (Llama), Google (Gemini), DeepSeek, Moonshot (Kimi)
   - Mistral, xAI (Grok), Qwen, Microsoft, NVIDIA, Cohere
   - Amazon, Perplexity, 01.AI, Reka, and more
@@ -354,7 +535,7 @@ pnpm run package:vsix
 Yes! SuperDesign is completely open source. Fork it, extend it, remix it.
 
 **Which AI provider should I choose?**
-- **OpenRouter**: Best option - access to 40+ models including DeepSeek R1, Kimi K2, Grok 3
+- **OpenRouter**: Best option - access to 60+ models including DeepSeek R1, Kimi K2, Grok 3, plus 20+ free models
 - **Anthropic**: Great for Claude models (3.5 Sonnet, 4 Opus)
 - **OpenAI**: Good for GPT models (4.1, 4.1 Mini)
 
@@ -450,11 +631,42 @@ pnpm run test:core     # Core components
 - **🐛 Bug Fixes**: Fix issues and improve stability
 - **⚡ Performance**: Optimize build times and runtime performance
 
+## 📋 Quick Reference
+
+### Installation Commands
+```bash
+# Easy installer (recommended)
+git clone https://github.com/orangebread/superdesign-open.git
+cd superdesign-open
+./install.sh  # macOS/Linux
+# or install.bat (Windows)
+
+# Manual VSIX install
+code --install-extension superdesign-open-0.0.11.vsix
+```
+
+### Key Files
+- **`.env`** - API key configuration (created by installer)
+- **`superdesign-open-0.0.11.vsix`** - Extension package file
+- **`INSTALL.md`** - Detailed installation guide
+
+### VSCode Commands
+- `SuperDesign: Open Chat` - Open the main chat interface
+- `SuperDesign: Configure API Key` - Set up API keys
+- `Extensions: Install from VSIX...` - Manual extension installation
+
+### Free Models to Try
+- `deepseek/deepseek-r1:free` - Advanced reasoning
+- `meta-llama/llama-3.1-405b-instruct:free` - Massive scale
+- `qwen/qwen3-coder:free` - Coding specialist
+- `moonshotai/kimi-k2:free` - Advanced reasoning
+
 ### 🆘 Getting Help
 
 - 💬 Join our [Discord](https://discord.gg/FYr49d6cQ9) for development discussions
 - 📖 Check existing [Issues](https://github.com/orangebread/superdesign-open/issues) and [Discussions](https://github.com/orangebread/superdesign-open/discussions)
 - 🐛 Report bugs with detailed reproduction steps
+- 📋 See [INSTALL.md](./INSTALL.md) for detailed installation help
 
 ---
 

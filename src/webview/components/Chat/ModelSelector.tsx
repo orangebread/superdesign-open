@@ -98,6 +98,32 @@ const ModelSelector: React.FC<ModelSelectorProps> = ({ selectedModel, onModelCha
         { id: 'huggingfaceh4/zephyr-7b-beta', name: 'Zephyr 7B Beta', provider: 'OpenRouter (HuggingFace)', category: 'Fast' },
         { id: 'nousresearch/nous-hermes-2-mixtral-8x7b-dpo', name: 'Nous Hermes 2 Mixtral 8x7B', provider: 'OpenRouter (Nous)', category: 'Balanced' },
 
+        // FREE MODELS (OpenRouter) - No cost to use
+        // Requested models
+        { id: 'qwen/qwen3-coder:free', name: 'Qwen3 Coder (Free)', provider: 'OpenRouter (Qwen)', category: 'Free' },
+        { id: 'qwen/qwen3-235b-a22b-2507:free', name: 'Qwen3 235B A22B (Free)', provider: 'OpenRouter (Qwen)', category: 'Free' },
+        { id: 'moonshotai/kimi-k2:free', name: 'Kimi K2 (Free)', provider: 'OpenRouter (Moonshot)', category: 'Free' },
+        { id: 'tngtech/deepseek-r1t2-chimera:free', name: 'DeepSeek R1T2 Chimera (Free)', provider: 'OpenRouter (TNG)', category: 'Free' },
+
+        // Additional popular free models
+        { id: 'deepseek/deepseek-r1:free', name: 'DeepSeek R1 (Free)', provider: 'OpenRouter (DeepSeek)', category: 'Free' },
+        { id: 'deepseek/deepseek-r1-distill-llama-70b:free', name: 'DeepSeek R1 Distill Llama 70B (Free)', provider: 'OpenRouter (DeepSeek)', category: 'Free' },
+        { id: 'deepseek/deepseek-chat-v3-0324:free', name: 'DeepSeek V3 (Free)', provider: 'OpenRouter (DeepSeek)', category: 'Free' },
+        { id: 'meta-llama/llama-3.1-405b-instruct:free', name: 'Llama 3.1 405B (Free)', provider: 'OpenRouter (Meta)', category: 'Free' },
+        { id: 'meta-llama/llama-3.3-70b-instruct:free', name: 'Llama 3.3 70B (Free)', provider: 'OpenRouter (Meta)', category: 'Free' },
+        { id: 'meta-llama/llama-3.2-11b-vision-instruct:free', name: 'Llama 3.2 11B Vision (Free)', provider: 'OpenRouter (Meta)', category: 'Free' },
+        { id: 'meta-llama/llama-3.2-3b-instruct:free', name: 'Llama 3.2 3B (Free)', provider: 'OpenRouter (Meta)', category: 'Free' },
+        { id: 'qwen/qwen-2.5-72b-instruct:free', name: 'Qwen 2.5 72B (Free)', provider: 'OpenRouter (Qwen)', category: 'Free' },
+        { id: 'qwen/qwen-2.5-coder-32b-instruct:free', name: 'Qwen 2.5 Coder 32B (Free)', provider: 'OpenRouter (Qwen)', category: 'Free' },
+        { id: 'qwen/qwq-32b:free', name: 'Qwen QwQ 32B (Free)', provider: 'OpenRouter (Qwen)', category: 'Free' },
+        { id: 'mistralai/mistral-7b-instruct:free', name: 'Mistral 7B (Free)', provider: 'OpenRouter (Mistral)', category: 'Free' },
+        { id: 'mistralai/mistral-nemo:free', name: 'Mistral Nemo (Free)', provider: 'OpenRouter (Mistral)', category: 'Free' },
+        { id: 'mistralai/mistral-small-24b-instruct-2501:free', name: 'Mistral Small 24B (Free)', provider: 'OpenRouter (Mistral)', category: 'Free' },
+        { id: 'google/gemma-2-9b-it:free', name: 'Gemma 2 9B (Free)', provider: 'OpenRouter (Google)', category: 'Free' },
+        { id: 'google/gemma-3-27b-it:free', name: 'Gemma 3 27B (Free)', provider: 'OpenRouter (Google)', category: 'Free' },
+        { id: 'google/gemma-3-12b-it:free', name: 'Gemma 3 12B (Free)', provider: 'OpenRouter (Google)', category: 'Free' },
+        { id: 'rekaai/reka-flash-3:free', name: 'Reka Flash 3 (Free)', provider: 'OpenRouter (Reka)', category: 'Free' },
+
         // Existing OpenAI (direct)
         { id: 'gpt-4.1', name: 'GPT-4.1', provider: 'OpenAI', category: 'Balanced' },
         { id: 'gpt-4.1-mini', name: 'GPT-4.1 Mini', provider: 'OpenAI', category: 'Fast' }
@@ -399,6 +425,41 @@ const ModelSelector: React.FC<ModelSelectorProps> = ({ selectedModel, onModelCha
                         align-items: center;
                         justify-content: center;
                     }
+
+                    .model-category-badge {
+                        flex-shrink: 0;
+                        font-size: 8px;
+                        font-weight: 600;
+                        padding: 1px 4px;
+                        border-radius: 2px;
+                        text-transform: uppercase;
+                        letter-spacing: 0.3px;
+                        margin-left: 4px;
+                    }
+
+                    .model-category-badge.free {
+                        background: #22c55e;
+                        color: white;
+                    }
+
+                    .model-category-badge.premium {
+                        background: #8b5cf6;
+                        color: white;
+                    }
+
+                    .model-category-badge.balanced {
+                        background: #3b82f6;
+                        color: white;
+                    }
+
+                    .model-category-badge.fast {
+                        background: #f59e0b;
+                        color: white;
+                    }
+
+                    .model-option.selected .model-category-badge {
+                        opacity: 0.9;
+                    }
                 `}
             </style>
 
@@ -464,6 +525,9 @@ const ModelSelector: React.FC<ModelSelectorProps> = ({ selectedModel, onModelCha
                                         <div className="model-info">
                                             <div className="model-name">{model.name}</div>
                                             <div className="model-provider">{model.provider}</div>
+                                        </div>
+                                        <div className={`model-category-badge ${model.category.toLowerCase()}`}>
+                                            {model.category}
                                         </div>
                                         {model.id === selectedModel && (
                                             <div className="model-check">✓</div>

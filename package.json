@@ -232,7 +232,9 @@
     "test:write-edit": "tsc --project tsconfig.test.json && node dist-test/test/write-edit-tools.test.js",
     "test:ls-grep-glob": "tsc --project tsconfig.test.json && node dist-test/test/ls-grep-glob-tools.test.js",
     "test:agent": "tsc --project tsconfig.test.json && node dist-test/test/llm-service.test.js && node dist-test/test/core-components.test.js",
-    "test:tools": "tsc --project tsconfig.test.json && node dist-test/test/read-tool.test.js && node dist-test/test/write-edit-tools.test.js && node dist-test/test/ls-grep-glob-tools.test.js"
+    "test:tools": "tsc --project tsconfig.test.json && node dist-test/test/read-tool.test.js && node dist-test/test/write-edit-tools.test.js && node dist-test/test/ls-grep-glob-tools.test.js",
+    "install:easy": "node -e \"console.log('🚀 Use the install scripts: ./install.sh (Unix) or install.bat (Windows)')\"",
+    "setup": "npm run install:easy"
   },
   "devDependencies": {
     "@types/mime-types": "^3.0.1",

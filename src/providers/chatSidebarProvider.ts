@@ -332,7 +332,29 @@ export class ChatSidebarProvider implements vscode.WebviewViewProvider {
             'inflection/inflection-3-productivity': 'Inflection 3 Productivity',
             'inflection/inflection-3-pi': 'Inflection 3 Pi',
             'rekaai/reka-flash-3': 'Reka Flash 3',
-            'openrouter/auto': 'Auto (Best Available)'
+            'openrouter/auto': 'Auto (Best Available)',
+            // Free models
+            'qwen/qwen3-coder:free': 'Qwen3 Coder (Free)',
+            'qwen/qwen3-235b-a22b-2507:free': 'Qwen3 235B A22B (Free)',
+            'moonshotai/kimi-k2:free': 'Kimi K2 (Free)',
+            'tngtech/deepseek-r1t2-chimera:free': 'DeepSeek R1T2 Chimera (Free)',
+            'deepseek/deepseek-r1:free': 'DeepSeek R1 (Free)',
+            'deepseek/deepseek-r1-distill-llama-70b:free': 'DeepSeek R1 Distill Llama 70B (Free)',
+            'deepseek/deepseek-chat-v3-0324:free': 'DeepSeek V3 (Free)',
+            'meta-llama/llama-3.1-405b-instruct:free': 'Llama 3.1 405B (Free)',
+            'meta-llama/llama-3.3-70b-instruct:free': 'Llama 3.3 70B (Free)',
+            'meta-llama/llama-3.2-11b-vision-instruct:free': 'Llama 3.2 11B Vision (Free)',
+            'meta-llama/llama-3.2-3b-instruct:free': 'Llama 3.2 3B (Free)',
+            'qwen/qwen-2.5-72b-instruct:free': 'Qwen 2.5 72B (Free)',
+            'qwen/qwen-2.5-coder-32b-instruct:free': 'Qwen 2.5 Coder 32B (Free)',
+            'qwen/qwq-32b:free': 'Qwen QwQ 32B (Free)',
+            'mistralai/mistral-7b-instruct:free': 'Mistral 7B (Free)',
+            'mistralai/mistral-nemo:free': 'Mistral Nemo (Free)',
+            'mistralai/mistral-small-24b-instruct-2501:free': 'Mistral Small 24B (Free)',
+            'google/gemma-2-9b-it:free': 'Gemma 2 9B (Free)',
+            'google/gemma-3-27b-it:free': 'Gemma 3 27B (Free)',
+            'google/gemma-3-12b-it:free': 'Gemma 3 12B (Free)',
+            'rekaai/reka-flash-3:free': 'Reka Flash 3 (Free)'
         };
         
         return modelNames[model] || model;
