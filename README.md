@@ -1,6 +1,6 @@
 # 🧠 SuperDesign(Open) — AI Design Agent for Your IDE
 
-> **Note**: This is a fork of the original [SuperDesign](https://github.com/superdesignai/superdesign) project, maintained independently with additional features and improvements.
+> **Note**: This is a fork of the original [SuperDesign](https://github.com/superdesigndev/superdesign) project, maintained independently with additional features and improvements.
 
 ![SuperDesign Cover](cover.png)
 
