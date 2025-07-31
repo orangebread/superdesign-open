@@ -234,7 +234,11 @@
     "test:agent": "tsc --project tsconfig.test.json && node dist-test/test/llm-service.test.js && node dist-test/test/core-components.test.js",
     "test:tools": "tsc --project tsconfig.test.json && node dist-test/test/read-tool.test.js && node dist-test/test/write-edit-tools.test.js && node dist-test/test/ls-grep-glob-tools.test.js",
     "install:easy": "node -e \"console.log('🚀 Use the install scripts: ./install.sh (Unix) or install.bat (Windows)')\"",
-    "setup": "npm run install:easy"
+    "setup": "npm run install:easy",
+    "release:build": "npm run package:vsix",
+    "release:manual": "npm run release:build && echo '📦 VSIX built! Upload superdesign-open-*.vsix to GitHub Releases'",
+    "release:auto": "npm run release:build && gh release create v$(node -p \"require('./package.json').version\") *.vsix --generate-notes --title \"SuperDesign v$(node -p \"require('./package.json').version\")\"",
+    "release": "npm run release:manual"
   },
   "devDependencies": {
     "@types/mime-types": "^3.0.1",

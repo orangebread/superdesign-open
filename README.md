@@ -69,12 +69,6 @@ This fork maintains full compatibility with the original while adding these enha
 
 ---
 
-## 🧠 Works Great With Cursor, Windsurf, Claude Code, VS Code
-
-👉 [Install here](https://www.superdesign.dev/)
-
----
-
 ## 🛠️ Getting Started
 
 ### 🚀 Easy Installation (Recommended)
@@ -85,39 +79,40 @@ git clone https://github.com/orangebread/superdesign-open.git
 cd superdesign-open
 ```
 
-**Step 2: Run the Installer**
+**Step 2: Setup API Key**
 
-**For macOS/Linux:**
-```bash
-chmod +x install.sh
-./install.sh
-```
+1. **Get a free API key from OpenRouter:**
+   - Go to https://openrouter.ai/
+   - Sign up (it's free)
+   - Go to https://openrouter.ai/keys
+   - Create a new key and copy it
 
-**For Windows (Command Prompt):**
-```cmd
-install.bat
-```
+2. **Create a `.env` file in the project folder:**
+   ```
+   OPENROUTER_API_KEY=your-key-here
+   ```
 
-**For Windows (PowerShell):**
-```powershell
-powershell -ExecutionPolicy Bypass -File install.ps1
-```
+**Step 3: Build the Extension**
 
-**What the installer does:**
-- ✅ Checks system requirements (Node.js, npm, VSCode)
-- ✅ Installs pnpm for faster builds (optional)
-- ✅ Installs all dependencies automatically
-- ✅ Builds and packages the extension (.vsix file)
-- ✅ Attempts automatic VSCode installation
-- ✅ Provides detailed manual installation guide if needed
-- ✅ Sets up configuration files (.env)
-- ✅ Guides you through next steps
+**In your terminal:**
+   ```bash
+   npm install
+   npm run compile
+   npm run package
+   ```
 
-**If VSCode CLI is not available**, the installer will:
-- ✅ Complete the build successfully
-- 📋 Show you exactly where the .vsix file is located
-- 📖 Provide 3 different manual installation methods
-- 🎯 Guide you through the entire process step-by-step
+This will create a `superdesign-open-0.0.11.vsix` file in the project folder.
+
+**Step 4: Install the Extension**
+
+**Method 1: Manual Installation**
+1. Open VSCode
+2. Press `Ctrl+Shift+P` (or `Cmd+Shift+P` on macOS)
+3. Type: `Extensions: Install from VSIX...`
+4. Select your `superdesign-open-0.0.11.vsix` file
+5. Restart VSCode
+
+> NOTE: If you already have superdesign installed, you will need to uninstall it first before installing the new version.
 
 ### 📦 Manual VSIX Installation
 
@@ -125,11 +120,13 @@ If you prefer to install manually or the automatic installer doesn't work:
 
 **Step 1: Get the VSIX File**
 
-*Option A: Download Pre-built*
+*Option A: Download Pre-built (Recommended)*
 ```bash
 # Download the latest release
-curl -L -o superdesign-open.vsix https://github.com/orangebread/superdesign-open/releases/latest/download/superdesign-open.vsix
+curl -L -o superdesign-open.vsix https://github.com/orangebread/superdesign-open/releases/latest/download/superdesign-open-0.0.11.vsix
 ```
+
+Or visit [Releases](https://github.com/orangebread/superdesign-open/releases) and download the `.vsix` file manually.
 
 *Option B: Build from Source*
 ```bash
@@ -173,7 +170,7 @@ code --install-extension superdesign-open-0.0.11.vsix
    - **Recommended**: OpenRouter API key for access to 60+ models including 20+ free models
    - Anthropic API key for Claude models
    - OpenAI API key for GPT models
-3. **Open SuperDesign** sidebar panel (click the brain icon 🧠)
+3. **Open SuperDesign** sidebar panel
 4. **Select a Model** from the dropdown (try DeepSeek R1 or Kimi K2)
 5. **Type a prompt** (e.g., _"Design a modern login screen with dark mode"_)
 6. **View & iterate** on generated mockups, components, and wireframes
